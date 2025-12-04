@@ -1,0 +1,50 @@
+## Build results
+bin/
+obj/
+out/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+## Rider / VSCode / Visual Studio
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## .NET Core
+*.db
+*.pdb
+
+## Logs
+*.log
+
+## OS trash
+.DS_Store
+Thumbs.db
+
+## NuGet
+*.nupkg
+.nuget/
+
+## Coverage / Test Output
+coverage/
+TestResults/
+*.coverage
+*.coveragexml
+
+## Publish artifacts
+publish/
+
+## Temp files
+*.tmp
+*.temp
+
+## JetBrains Rider Cache
+.idea/
+*.DotSettings.user
