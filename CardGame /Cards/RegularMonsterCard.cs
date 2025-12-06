@@ -1,50 +1,52 @@
 namespace CardGame.Cards;
 
-// Monster card that have HP and Damage points  
+// Monster card that have HP and Damage points
 public class RegularMonsterCard(string name, string description, int hp, int atk)
 	: BaseCard(name,
-		description), ICardHeal, IDamage, IDamageable {
+		description), IHadHeal, IDamage {
 	public override string Name { get; set; }
 	public override string Description { get; set; }
 
-	public int CardHealth { get; private set; } = hp;
-	public int MaxCardHealth { get; private set; } = hp;
-	private int CardDamage { get; set; } = atk;
+	public int Health { get; private set; } = hp;
+	public int MaxHealth { get; private set; } = hp;
+	public int Damage { get; private set; } = atk;
 
-	public void TakeDamage(int damage) {
-		this.CardHealth -= damage;
+	public int TakeDamage(int damage) {
+		this.Health -= damage;
 
-		if (this.CardHealth <= 0) {
-			// destroy card
+		if (this.Health <= 0) {
+			this.Health = 0;
+			return 0;
 		}
+
+		return this.Health;
 	}
 
 	public void Healed(int heal) {
-		int newHealVal = this.CardHealth + heal;
+		int newHealVal = this.Health + heal;
 
-		if (newHealVal >= MaxCardHealth) this.CardHealth = this.MaxCardHealth;
-		else this.CardHealth = newHealVal;
+		if (newHealVal >= this.MaxHealth) this.Health = this.MaxHealth;
+		else this.Health = newHealVal;
 	}
 
 	public void ReSetFullHealth(int newMaxHealth) {
-		this.MaxCardHealth = newMaxHealth;
+		this.MaxHealth = newMaxHealth;
 	}
 
-	public void Attack(IDamageable targetCard) {
-		targetCard.TakeDamage(this.CardDamage);
+	public void Attack(IHadHeal targetCard) {
+		targetCard.TakeDamage(this.Damage);
 	}
 
 	public override string ToString() {
-		return $"{Name} (HP: {((RegularMonsterCard)this).CardHealth}, DMG: {((RegularMonsterCard)this).CardDamage})";
+		return $"{Name} (HP: {((RegularMonsterCard)this).Health}, DMG: {((RegularMonsterCard)this).Damage})";
 	}
 
-	override
-		public BaseCard Clone() {
+	public override BaseCard Clone() {
 		return new RegularMonsterCard(
 			Name = this.Name,
 			Description = this.Description,
-			CardHealth = this.CardHealth,
-			CardDamage = this.CardDamage
+			this.Health = this.Health,
+			this.Damage = this.Damage
 		);
 	}
 }

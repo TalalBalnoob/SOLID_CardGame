@@ -18,21 +18,6 @@ class Program {
 
 		gameEngine.StartGame();
 
-		// Console.WriteLine(gameEngine.Players[0].Hand);
-		// Console.WriteLine("===");
-		// Console.WriteLine(gameEngine.Players[0].Deck);
-		// Console.WriteLine("===");
-		// Console.WriteLine(gameEngine.Players[1].Hand);
-		// Console.WriteLine("===");
-		// Console.WriteLine(gameEngine.Players[1].Deck);
-
-		// Console.WriteLine(gameEngine.Players[0].Board);
-		// Console.WriteLine("===");
-		// Console.WriteLine(gameEngine.Players[1].Board);
-
-
-		gameEngine.PlayerPlayCard(2, 1);
-		gameEngine.PlayerPlayCard(1, 3);
 
 		//Player attack
 

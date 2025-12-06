@@ -1,19 +1,14 @@
 using CardGame.Board;
 using CardGame.Cards;
 using CardGame.Player;
+using CardGame.Statics;
 
 namespace CardGame.Game;
-
-public interface IGameEngine2 {
-	List<IPlayer> Players { get; }
-	List<IBoard> Boards { get; }
-	void StartGame();
-}
 
 public class GameEngine : IGameEngine {
 	public List<IPlayer> Players { get; private set; }
 	public List<IBoard> Boards { get; private set; }
-	public int PlayerTurn { get; private set; }
+	public bool PlayerTurn { get; private set; }
 
 	public GameEngine(IPlayer[] playersList, Func<IBoard> boardFactory) {
 		Players = new List<IPlayer>(playersList);
@@ -34,7 +29,7 @@ public class GameEngine : IGameEngine {
 			player.Game = this;
 		}
 
-		PlayerTurn = 0;
+		PlayerTurn = false;
 	}
 
 	public void PlayerPlayCard(int player, int cardIndex, int BoardSlot) {
@@ -48,41 +43,50 @@ public class GameEngine : IGameEngine {
 			throw;
 		}
 
-		PlayerTurn = player == 1 ? 0 : 1;
+		PlayerTurn = player == 1;
 	}
 
 	public void PlayerPlayCard(int cardIndex, int BoardSlot) {
 		try {
-			Players[PlayerTurn].PlayCard(cardIndex, BoardSlot);
+			Players[PlayerTurn.ToInt()].PlayCard(cardIndex, BoardSlot);
 		}
 		catch (Exception e) {
 			Console.WriteLine(e);
 			throw;
 		}
 
-		PlayerTurn = PlayerTurn == 1 ? 0 : 1;
+		PlayerTurn = !PlayerTurn;
 	}
 
 	public void PlayerAttack(int playerSlot, int opponentSlot) {
 		// Check if card is in the slot and if it can attack
-		BaseCard? playerCard = Players[PlayerTurn].Board.GetCardAtSlot(playerSlot);
+		BaseCard? playerCard = Players[PlayerTurn.ToInt()].Board.GetCardAtSlot(playerSlot);
 		if (playerCard == null) throw new InvalidOperationException("No attacking card in slot " + playerSlot);
 		var attackingCard = playerCard as IDamage;
 		if (attackingCard == null) throw new Exception("Card cannot attack.");
+		Console.WriteLine(attackingCard + " Attacking");
 
 		// Check if card is in the slot and if it can be attacked
-		BaseCard? oppenentCard = Players[PlayerTurn == 1 ? 0 : 1].Board.GetCardAtSlot(playerSlot);
-		if (oppenentCard == null) throw new InvalidOperationException("No card to attack in slot " + playerSlot);
-		var defendingCard = playerCard as IDamageable;
+		BaseCard? opponentCard = Players[(!PlayerTurn).ToInt()].Board.GetCardAtSlot(opponentSlot);
+		if (opponentCard == null) throw new InvalidOperationException("No card to attack in slot " + opponentSlot);
+		var defendingCard = opponentCard as IHadHeal;
 		if (defendingCard == null) throw new Exception("Card cannot be attacked.");
+		Console.WriteLine(defendingCard + " Defending");
 
-		// refactor so it regive the attack result
+		// refactor so it returns the attack result
+		var results = Battle.Attack(attackingCard, defendingCard);
 		// damage and heal exchange
 		// destroy 0 heal cards
-		attackingCard.Attack(defendingCard);
+		if (results[1] == null) Players[(!PlayerTurn).ToInt()].Board.RemoveCard(opponentSlot);
+
+		PlayerTurn = !PlayerTurn;
 	}
 
 	public void PlayerAttack(int player, int playerSlot, int opponentSlot) {
 		throw new NotImplementedException();
+	}
+
+	public void EndTurn() {
+		PlayerTurn = !PlayerTurn;
 	}
 }

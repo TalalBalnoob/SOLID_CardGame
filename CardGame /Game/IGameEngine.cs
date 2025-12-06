@@ -11,4 +11,5 @@ public interface IGameEngine {
 	void PlayerPlayCard(int player, int cardIndex, int BoardSlot);
 	void PlayerAttack(int playerSlot, int opponentSlot);
 	void PlayerAttack(int player, int playerSlot, int opponentSlot);
+	void EndTurn();
 }
