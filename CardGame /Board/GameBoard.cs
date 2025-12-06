@@ -27,7 +27,7 @@ public class GameBoard : IBoard {
 
 	public bool IsCardInSlotAttackable(int slot) {
 		var card = this.GetCardAtSlot(slot);
-		return card != null && typeof(IDamageable) == card.GetType();
+		return card != null && typeof(IHadHeal) == card.GetType();
 	}
 
 	public override string ToString() {
